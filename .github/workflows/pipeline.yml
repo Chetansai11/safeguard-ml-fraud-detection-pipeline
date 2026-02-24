@@ -183,7 +183,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/fraud-detection-inference:$IMAGE_TAG .
-          docker tag $ECR_REGISTRY/fraud-detection-inference:$IMAGE_TAG $ECR_REGISTRY/fraud-detection-inference:latest
-          docker push $ECR_REGISTRY/fraud-detection-inference:$IMAGE_TAG
-          docker push $ECR_REGISTRY/fraud-detection-inference:latest
+          docker build -t $ECR_REGISTRY/safeguard-ml-fraud-detection-pipeline-inference:$IMAGE_TAG .
+          docker tag $ECR_REGISTRY/safeguard-ml-fraud-detection-pipeline-inference:$IMAGE_TAG $ECR_REGISTRY/safeguard-ml-fraud-detection-pipeline-inference:latest
+          docker push $ECR_REGISTRY/safeguard-ml-fraud-detection-pipeline-inference:$IMAGE_TAG
+          docker push $ECR_REGISTRY/safeguard-ml-fraud-detection-pipeline-inference:latest
