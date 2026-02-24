@@ -54,9 +54,9 @@ aws:
   sagemaker_role: arn:aws:iam::role/FraudDetectionSageMakerRole
 
 s3:
-  bronze_bucket: fraud-detection-bronze
-  silver_bucket: fraud-detection-silver
-  gold_bucket: fraud-detection-gold
+  bronze_bucket: safeguard-ml-fraud-detection-pipeline-bronze
+  silver_bucket: safeguard-ml-fraud-detection-pipeline-silver
+  gold_bucket: safeguard-ml-fraud-detection-pipeline-gold
 
 mlflow:
   tracking_uri: ""

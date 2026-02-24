@@ -14,7 +14,7 @@ permissions:
 env:
   AWS_REGION: us-east-1
   PYTHON_VERSION: "3.11"
-  S3_DATA_URI: s3://fraud-detection-bronze/Variant II.csv
+  S3_DATA_URI: s3://safeguard-ml-fraud-detection-pipeline-bronze/Variant II.csv
 
 jobs:
   # =========================================================================
