@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import numpy as np
-import pytest
 import xgboost as xgb
 
 from src.train import compute_metrics, focal_binary_objective

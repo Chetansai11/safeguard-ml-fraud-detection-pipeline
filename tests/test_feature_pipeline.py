@@ -4,13 +4,10 @@ from __future__ import annotations
 
 import numpy as np
 import polars as pl
-import pytest
 
 from src.data_engineering import temporal_split
 from src.feature_pipeline import (
     ALL_BINARY,
-    ALL_CATEGORICAL,
-    ALL_NUMERICAL,
     PROTECTED_ATTRS,
     build_preprocessor,
     prepare_splits,

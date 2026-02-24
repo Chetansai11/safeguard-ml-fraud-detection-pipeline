@@ -19,7 +19,6 @@ from pathlib import Path
 from typing import Any
 
 import matplotlib
-matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import mlflow
 import mlflow.xgboost
@@ -29,11 +28,12 @@ import xgboost as xgb
 import yaml
 from sklearn.metrics import (
     average_precision_score,
-    f1_score,
     precision_recall_curve,
     roc_auc_score,
     roc_curve,
 )
+
+matplotlib.use("Agg")
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)

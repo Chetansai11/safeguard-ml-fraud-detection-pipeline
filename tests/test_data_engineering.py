@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import polars as pl
-import pytest
 
 from src.data_engineering import load_and_collect, temporal_split
 
