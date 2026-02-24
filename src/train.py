@@ -148,21 +148,48 @@ def _log_pr_curve(y_true: np.ndarray, y_score: np.ndarray, prefix: str, out_dir:
 
 
 def _log_shap(booster: xgb.Booster, X: np.ndarray, feature_names: list[str], out_dir: Path) -> None:
-    """Compute and log SHAP feature-importance bar plot."""
-    explainer = shap.TreeExplainer(booster)
-    shap_values = explainer.shap_values(X[:5000])  # cap for speed
+    """Compute and log SHAP feature-importance bar plot.
 
-    fig, ax = plt.subplots(figsize=(10, 8))
-    shap.summary_plot(
-        shap_values, X[:5000], feature_names=feature_names, show=False, plot_type="bar"
-    )
-    path = out_dir / "shap_importance.png"
-    plt.savefig(path, dpi=150, bbox_inches="tight")
-    plt.close("all")
-    mlflow.log_artifact(str(path))
+    Falls back to XGBoost built-in gain importance if SHAP is incompatible
+    with the installed XGBoost version.
+    """
+    shap_values = None
+    try:
+        explainer = shap.TreeExplainer(booster)
+        shap_values = explainer.shap_values(X[:5000])
+    except (ValueError, TypeError, Exception) as exc:
+        logger.warning("SHAP TreeExplainer failed (%s); falling back to gain importance", exc)
 
-    mean_abs = np.abs(shap_values).mean(axis=0)
-    importance = dict(sorted(zip(feature_names, mean_abs.tolist()), key=lambda x: -x[1]))
+    if shap_values is not None:
+        fig, ax = plt.subplots(figsize=(10, 8))
+        shap.summary_plot(
+            shap_values, X[:5000], feature_names=feature_names, show=False, plot_type="bar"
+        )
+        path = out_dir / "shap_importance.png"
+        plt.savefig(path, dpi=150, bbox_inches="tight")
+        plt.close("all")
+        mlflow.log_artifact(str(path))
+
+        mean_abs = np.abs(shap_values).mean(axis=0)
+        importance = dict(sorted(zip(feature_names, mean_abs.tolist()), key=lambda x: -x[1]))
+    else:
+        raw_scores = booster.get_score(importance_type="gain")
+        fname_map = {f"f{i}": name for i, name in enumerate(feature_names)}
+        importance = {}
+        for k, v in raw_scores.items():
+            importance[fname_map.get(k, k)] = v
+        importance = dict(sorted(importance.items(), key=lambda x: -x[1]))
+
+        top_n = list(importance.items())[:20]
+        fig, ax = plt.subplots(figsize=(10, 8))
+        ax.barh([n for n, _ in reversed(top_n)], [v for _, v in reversed(top_n)])
+        ax.set_xlabel("Mean Gain")
+        ax.set_title("Feature Importance (XGBoost Gain)")
+        path = out_dir / "shap_importance.png"
+        fig.savefig(path, dpi=150, bbox_inches="tight")
+        plt.close(fig)
+        mlflow.log_artifact(str(path))
+
     imp_path = out_dir / "shap_importance.json"
     imp_path.write_text(json.dumps(importance, indent=2))
     mlflow.log_artifact(str(imp_path))

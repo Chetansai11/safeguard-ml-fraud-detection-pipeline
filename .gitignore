@@ -19,6 +19,7 @@ env/
 # ML artifacts
 artifacts/
 mlruns/
+mlflow.db
 *.xgb
 *.model
 model.tar.gz

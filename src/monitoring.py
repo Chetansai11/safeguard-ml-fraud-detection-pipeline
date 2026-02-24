@@ -16,9 +16,9 @@ from pathlib import Path
 import pandas as pd
 import polars as pl
 import yaml
-from evidently import ColumnMapping
-from evidently.metric_preset import DataDriftPreset, TargetDriftPreset
-from evidently.report import Report
+from evidently.legacy.pipeline.column_mapping import ColumnMapping
+from evidently.legacy.metric_preset import DataDriftPreset, TargetDriftPreset
+from evidently.legacy.report import Report
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
