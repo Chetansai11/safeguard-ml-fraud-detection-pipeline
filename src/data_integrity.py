@@ -105,7 +105,11 @@ def run_integrity_check(
         "statistics": results.statistics,
         "results": [
             {
-                "expectation": r.expectation_config.expectation_type,
+                "expectation": getattr(
+                    r.expectation_config,
+                    "type",
+                    getattr(r.expectation_config, "expectation_type", "unknown"),
+                ),
                 "column": r.expectation_config.kwargs.get("column", ""),
                 "success": r.success,
             }
