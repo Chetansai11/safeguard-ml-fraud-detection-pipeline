@@ -146,7 +146,7 @@ jobs:
       - name: Evaluate model
         run: |
           python -m src.evaluate \
-            --model-path artifacts/model.xgb \
+            --model-path artifacts/model.ubj \
             --data-path "data/Variant II.csv" \
             --report-dir artifacts/reports/
 

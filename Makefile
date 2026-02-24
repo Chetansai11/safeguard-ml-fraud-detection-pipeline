@@ -49,7 +49,7 @@ train: ## Train XGBoost fraud model (MLflow tracked)
 
 evaluate: ## Evaluate model on month-7 test set
 	$(PYTHON) -m src.evaluate \
-		--model-path artifacts/model.xgb \
+		--model-path artifacts/model.ubj \
 		--data-path $(DATA) \
 		--config $(CONFIG) \
 		--report-dir artifacts/reports/

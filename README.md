@@ -135,7 +135,7 @@ make lint
 - Hyperparameters and class imbalance ratio
 - Precision-Recall curve (validation)
 - SHAP feature importance (bar plot + JSON)
-- Model binary (`model.xgb`)
+- Model binary (`model.ubj`)
 - Full metrics JSON
 
 ## Monitoring

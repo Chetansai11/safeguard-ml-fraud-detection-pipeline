@@ -224,7 +224,7 @@ def main() -> None:
     from src.feature_pipeline import prepare_splits
 
     parser = argparse.ArgumentParser(description="Evaluate fraud model on month-7 test set")
-    parser.add_argument("--model-path", default="artifacts/model.xgb")
+    parser.add_argument("--model-path", default="artifacts/model.ubj")
     parser.add_argument("--data-path", default="data/Variant II.csv")
     parser.add_argument("--config", default="configs/fraud_config.yaml")
     parser.add_argument("--report-dir", default="artifacts/reports")

@@ -270,10 +270,10 @@ def train_model(
         logger.info("Validation metrics: %s", metrics)
 
         # -- Artifacts --
-        model_path = output_dir / "model.xgb"
+        model_path = output_dir / "model.ubj"
         booster.save_model(str(model_path))
         mlflow.log_artifact(str(model_path))
-        mlflow.xgboost.log_model(booster, artifact_path="xgboost-model")
+        mlflow.xgboost.log_model(booster, name="xgboost-model")
 
         _log_pr_curve(y_val, y_score, "val", output_dir)
         _log_shap(booster, X_val, feature_names, output_dir)

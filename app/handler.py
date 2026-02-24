@@ -140,7 +140,7 @@ def load_artifacts() -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             _download_from_s3(model_uri, tmpdir)
             model_file = None
-            for candidate in ["xgboost-model", "model.xgb"]:
+            for candidate in ["xgboost-model", "model.ubj", "model.xgb"]:
                 fp = os.path.join(tmpdir, candidate)
                 if os.path.exists(fp):
                     model_file = fp
