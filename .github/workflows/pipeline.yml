@@ -14,10 +14,12 @@ permissions:
 env:
   AWS_REGION: us-east-1
   PYTHON_VERSION: "3.11"
+  S3_DATA_URI: s3://fraud-detection-bronze/Variant II.csv
 
 jobs:
   # =========================================================================
-  # Stage 1: Lint & Test
+  # Stage 1: Lint & Test — runs on EVERY push/PR
+  # No AWS credentials needed. Tests use synthetic fixtures, not real data.
   # =========================================================================
   lint-and-test:
     name: Lint & Test
@@ -51,7 +53,8 @@ jobs:
           path: test-results.xml
 
   # =========================================================================
-  # Stage 2: Drift Report on PRs (CML + Evidently)
+  # Stage 2: Drift Report — runs on PRs only
+  # Requires: AWS credentials (to download data from S3)
   # =========================================================================
   drift-report:
     name: Drift Report (CML)
@@ -60,6 +63,12 @@ jobs:
     needs: lint-and-test
     steps:
       - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -72,6 +81,11 @@ jobs:
 
       - name: Setup CML
         uses: iterative/setup-cml@v2
+
+      - name: Download data from S3
+        run: |
+          mkdir -p data
+          aws s3 cp "${{ env.S3_DATA_URI }}" "data/Variant II.csv"
 
       - name: Generate Evidently drift report
         run: |
@@ -92,7 +106,8 @@ jobs:
           path: artifacts/reports/drift_report.html
 
   # =========================================================================
-  # Stage 3: Train & deploy on merge to main
+  # Stage 3: Train & Evaluate — runs on merge to main
+  # Requires: AWS credentials (S3 for data, MLflow for tracking)
   # =========================================================================
   train-and-deploy:
     name: Train & Deploy
@@ -117,6 +132,11 @@ jobs:
       - name: Install dependencies
         run: pip install -e ".[dev]"
 
+      - name: Download data from S3
+        run: |
+          mkdir -p data
+          aws s3 cp "${{ env.S3_DATA_URI }}" "data/Variant II.csv"
+
       - name: Data integrity gate
         run: python -m src.data_integrity --data-path "data/Variant II.csv"
 
@@ -137,7 +157,8 @@ jobs:
           path: artifacts/reports/
 
   # =========================================================================
-  # Stage 4: Build and push Docker image
+  # Stage 4: Build & push Docker image — runs after successful training
+  # Requires: AWS credentials (ECR push)
   # =========================================================================
   build-and-push:
     name: Build & Push Container
