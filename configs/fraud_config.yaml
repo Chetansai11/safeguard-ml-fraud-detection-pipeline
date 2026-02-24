@@ -1,0 +1,91 @@
+project:
+  name: fraud-detection
+  description: "Bank Account Fraud Detection — BAF Suite Variant II"
+
+data:
+  raw_path: "data/Variant II.csv"
+  target: fraud_bool
+  temporal_col: month
+  train_months: [0, 1, 2, 3, 4, 5]
+  val_months: [6]
+  test_months: [7]
+
+features:
+  categorical:
+    - payment_type
+    - housing_status
+    - source
+    - device_os
+  binary:
+    - email_is_free
+    - phone_home_valid
+    - phone_mobile_valid
+    - has_other_cards
+    - foreign_request
+    - keep_alive_session
+  numerical:
+    - name_email_similarity
+    - prev_address_months_count
+    - current_address_months_count
+    - days_since_request
+    - intended_balcon_amount
+    - zip_count_4w
+    - velocity_6h
+    - velocity_24h
+    - velocity_4w
+    - bank_branch_count_8w
+    - date_of_birth_distinct_emails_4w
+    - credit_risk_score
+    - proposed_credit_limit
+    - session_length_in_minutes
+    - device_distinct_emails_8w
+    - device_fraud_count
+    - bank_months_count
+  protected:
+    - customer_age
+    - employment_status
+    - income
+
+fairness:
+  mode: unaware  # "unaware" excludes protected cols from model, "aware" includes them
+
+aws:
+  region: us-east-1
+  sagemaker_role: arn:aws:iam::role/FraudDetectionSageMakerRole
+
+s3:
+  bronze_bucket: fraud-detection-bronze
+  silver_bucket: fraud-detection-silver
+  gold_bucket: fraud-detection-gold
+
+mlflow:
+  tracking_uri: ""
+  experiment_name: fraud-detection-baf-v2
+
+model:
+  objective: "binary:logistic"
+  loss_strategy: scale_pos_weight  # "scale_pos_weight" or "focal"
+  focal_gamma: 2.0
+  focal_alpha: 0.25
+  hyperparameters:
+    max_depth: 6
+    learning_rate: 0.05
+    n_estimators: 1000
+    subsample: 0.8
+    colsample_bytree: 0.8
+    min_child_weight: 5
+    gamma: 0.1
+    reg_alpha: 0.1
+    reg_lambda: 1.0
+    eval_metric: aucpr
+    early_stopping_rounds: 50
+    seed: 42
+
+evaluation:
+  thresholds:
+    recall_at_1pct_fpr: 0.40
+    pr_auc: 0.30
+
+model_registry:
+  model_package_group: fraud-detection-baf
+  approval_status: PendingManualApproval
