@@ -45,7 +45,9 @@ class TestBuildPreprocessor:
 class TestPrepareSplits:
     def test_output_shapes(self, synthetic_fraud_df: pl.DataFrame, tmp_path):
         train, val, test = temporal_split(synthetic_fraud_df)
-        splits = prepare_splits(train, val, test, fairness_mode="unaware", artifact_dir=str(tmp_path))
+        splits = prepare_splits(
+            train, val, test, fairness_mode="unaware", artifact_dir=str(tmp_path)
+        )
 
         assert splits["X_train"].shape[0] == train.height
         assert splits["X_val"].shape[0] == val.height

@@ -48,6 +48,7 @@ def load_config(path: str | Path = "configs/fraud_config.yaml") -> dict:
 # Focal loss — custom XGBoost objective
 # ---------------------------------------------------------------------------
 
+
 def focal_binary_objective(
     predt: np.ndarray,
     dtrain: xgb.DMatrix,
@@ -91,6 +92,7 @@ def focal_binary_objective(
 # Metrics
 # ---------------------------------------------------------------------------
 
+
 def compute_metrics(y_true: np.ndarray, y_score: np.ndarray) -> dict[str, float]:
     """Fraud-oriented evaluation metrics.
 
@@ -127,6 +129,7 @@ def compute_metrics(y_true: np.ndarray, y_score: np.ndarray) -> dict[str, float]
 # MLflow artifact helpers
 # ---------------------------------------------------------------------------
 
+
 def _log_pr_curve(y_true: np.ndarray, y_score: np.ndarray, prefix: str, out_dir: Path) -> None:
     """Plot and log a precision-recall curve to MLflow."""
     prec, rec, _ = precision_recall_curve(y_true, y_score)
@@ -150,7 +153,9 @@ def _log_shap(booster: xgb.Booster, X: np.ndarray, feature_names: list[str], out
     shap_values = explainer.shap_values(X[:5000])  # cap for speed
 
     fig, ax = plt.subplots(figsize=(10, 8))
-    shap.summary_plot(shap_values, X[:5000], feature_names=feature_names, show=False, plot_type="bar")
+    shap.summary_plot(
+        shap_values, X[:5000], feature_names=feature_names, show=False, plot_type="bar"
+    )
     path = out_dir / "shap_importance.png"
     plt.savefig(path, dpi=150, bbox_inches="tight")
     plt.close("all")
@@ -166,6 +171,7 @@ def _log_shap(booster: xgb.Booster, X: np.ndarray, feature_names: list[str], out
 # ---------------------------------------------------------------------------
 # Training
 # ---------------------------------------------------------------------------
+
 
 def train_model(
     X_train: np.ndarray,
@@ -285,6 +291,7 @@ def train_model(
 # CLI entry-point
 # ---------------------------------------------------------------------------
 
+
 def main() -> None:
     """Train from pre-split local files (for development / Makefile target)."""
     from src.data_engineering import load_and_collect, temporal_split
@@ -302,7 +309,9 @@ def main() -> None:
     train_df, val_df, test_df = temporal_split(df)
 
     splits = prepare_splits(
-        train_df, val_df, test_df,
+        train_df,
+        val_df,
+        test_df,
         fairness_mode=config["fairness"]["mode"],
         artifact_dir=args.output_dir,
     )

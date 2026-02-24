@@ -75,6 +75,7 @@ def load_config(path: str | Path = "configs/fraud_config.yaml") -> dict:
 # Column resolver
 # ---------------------------------------------------------------------------
 
+
 def resolve_feature_columns(
     fairness_mode: str = "unaware",
 ) -> tuple[list[str], list[str], list[str]]:
@@ -102,6 +103,7 @@ def resolve_feature_columns(
 # ---------------------------------------------------------------------------
 # ColumnTransformer builder
 # ---------------------------------------------------------------------------
+
 
 def build_preprocessor(
     categorical_cols: list[str],
@@ -141,6 +143,7 @@ def build_preprocessor(
 # ---------------------------------------------------------------------------
 # High-level API
 # ---------------------------------------------------------------------------
+
 
 def prepare_splits(
     train_df: pl.DataFrame,

@@ -42,6 +42,7 @@ def load_config(path: str | Path = "configs/fraud_config.yaml") -> dict:
 # Core evaluation
 # ---------------------------------------------------------------------------
 
+
 def evaluate_model(
     booster: xgb.Booster,
     X_test: np.ndarray,
@@ -110,6 +111,7 @@ def evaluate_model(
 # Fairness audit
 # ---------------------------------------------------------------------------
 
+
 def fairness_audit(
     y_true: np.ndarray,
     y_score: np.ndarray,
@@ -161,6 +163,7 @@ def fairness_audit(
 # ---------------------------------------------------------------------------
 # Plot helpers
 # ---------------------------------------------------------------------------
+
 
 def save_evaluation_plots(
     y_true: np.ndarray,
@@ -215,6 +218,7 @@ def save_evaluation_plots(
 # CLI
 # ---------------------------------------------------------------------------
 
+
 def main() -> None:
     from src.data_engineering import load_and_collect, temporal_split
     from src.feature_pipeline import prepare_splits
@@ -236,7 +240,9 @@ def main() -> None:
     df = load_and_collect(args.data_path)
     train_df, val_df, test_df = temporal_split(df)
     splits = prepare_splits(
-        train_df, val_df, test_df,
+        train_df,
+        val_df,
+        test_df,
         fairness_mode=config["fairness"]["mode"],
         artifact_dir="artifacts",
     )

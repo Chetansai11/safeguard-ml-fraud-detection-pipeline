@@ -39,6 +39,7 @@ _preprocessor = None
 # Pydantic schemas
 # ---------------------------------------------------------------------------
 
+
 class FraudRequest(BaseModel):
     """Input payload mirroring the BAF Variant II feature set."""
 
@@ -89,6 +90,7 @@ class HealthResponse(BaseModel):
 # ---------------------------------------------------------------------------
 # Model loading
 # ---------------------------------------------------------------------------
+
 
 @lru_cache(maxsize=1)
 def _sm_client():

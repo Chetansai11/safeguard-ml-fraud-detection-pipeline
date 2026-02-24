@@ -31,6 +31,7 @@ TEMPORAL_COL = "month"
 # Configuration
 # ---------------------------------------------------------------------------
 
+
 def load_config(path: str | Path = "configs/fraud_config.yaml") -> dict:
     """Load pipeline configuration from YAML."""
     with open(path) as fh:
@@ -40,6 +41,7 @@ def load_config(path: str | Path = "configs/fraud_config.yaml") -> dict:
 # ---------------------------------------------------------------------------
 # Polars-based data loading
 # ---------------------------------------------------------------------------
+
 
 def load_raw(path: str | Path) -> pl.LazyFrame:
     """Scan CSV lazily with Polars for memory-efficient access.
@@ -78,6 +80,7 @@ def load_and_collect(path: str | Path) -> pl.DataFrame:
 # Temporal splitting
 # ---------------------------------------------------------------------------
 
+
 def temporal_split(
     df: pl.DataFrame,
     train_months: list[int] | None = None,
@@ -109,9 +112,7 @@ def temporal_split(
     test_df = df.filter(pl.col(TEMPORAL_COL).is_in(test_months))
 
     for label, split in [("train", train_df), ("val", val_df), ("test", test_df)]:
-        fraud_rate = (
-            split[TARGET].sum() / split.height * 100 if split.height > 0 else 0
-        )
+        fraud_rate = split[TARGET].sum() / split.height * 100 if split.height > 0 else 0
         logger.info(
             "%-5s | rows=%7d | fraud_rate=%.2f%%",
             label,
@@ -125,6 +126,7 @@ def temporal_split(
 # ---------------------------------------------------------------------------
 # Medallion Architecture — S3 transport
 # ---------------------------------------------------------------------------
+
 
 def _get_s3(s3_client: S3Client | None = None) -> S3Client:
     return s3_client or boto3.client("s3")
@@ -219,6 +221,7 @@ def silver_to_gold(
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Fraud data engineering pipeline")

@@ -141,10 +141,14 @@ def generate_markdown_summary(summary: dict) -> str:
         lines.append("")
 
     if summary["dataset_drift_detected"]:
-        lines.append("> **Warning**: Significant distribution shift detected. "
-                      "Investigate before relying on month-7 predictions.")
+        lines.append(
+            "> **Warning**: Significant distribution shift detected. "
+            "Investigate before relying on month-7 predictions."
+        )
     else:
-        lines.append("> **OK**: No significant distribution shift between training and production data.")
+        lines.append(
+            "> **OK**: No significant distribution shift between training and production data."
+        )
 
     return "\n".join(lines)
 
@@ -152,6 +156,7 @@ def generate_markdown_summary(summary: dict) -> str:
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate Evidently drift report")

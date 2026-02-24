@@ -64,10 +64,10 @@ def build_expectations(validator) -> None:
     # -- Feature range checks (catch egregious outliers / corruption) --
     validator.expect_column_values_to_be_between("customer_age", min_value=10, max_value=100)
     validator.expect_column_values_to_be_between("income", min_value=0, max_value=1.0)
-    validator.expect_column_values_to_be_between("name_email_similarity", min_value=0, max_value=1.0)
     validator.expect_column_values_to_be_between(
-        "credit_risk_score", min_value=-500, max_value=500
+        "name_email_similarity", min_value=0, max_value=1.0
     )
+    validator.expect_column_values_to_be_between("credit_risk_score", min_value=-500, max_value=500)
 
     # -- Row-level uniqueness is not enforced (legitimate duplicates may exist) --
 
@@ -137,6 +137,7 @@ def run_integrity_check(
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run data integrity checks")
